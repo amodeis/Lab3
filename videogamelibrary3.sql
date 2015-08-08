@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 5.6.25, for Win64 (x86_64)
 --
--- Host: localhost    Database: videogamelibrary
+-- Host: localhost    Database: VideoGameLibrary
 -- ------------------------------------------------------
 -- Server version	5.6.25-log
 
@@ -16,12 +16,12 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `videogamelibrary`
+-- Current Database: `VideoGameLibrary`
 --
 
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `videogamelibrary` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/ `VideoGameLibrary` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
-USE `videogamelibrary`;
+USE `VideoGameLibrary`;
 
 --
 -- Table structure for table `developer`
@@ -31,10 +31,11 @@ DROP TABLE IF EXISTS `developer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `developer` (
-  `developerName` varchar(25) NOT NULL,
-  `devHQ` varchar(55) DEFAULT NULL,
-  PRIMARY KEY (`developerName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `developerID` int(11) NOT NULL AUTO_INCREMENT,
+  `developerName` varchar(55) DEFAULT NULL,
+  `developerHQ` varchar(55) DEFAULT NULL,
+  PRIMARY KEY (`developerID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +44,7 @@ CREATE TABLE `developer` (
 
 LOCK TABLES `developer` WRITE;
 /*!40000 ALTER TABLE `developer` DISABLE KEYS */;
-INSERT INTO `developer` VALUES ('\"	Konami\"','\"Tokyo'),('\"	Namco\"','\"Tokyo'),('\"	Stern Electronics\"','\"Chicago'),('DeveloperName','devHQ'),('ID Software','\"Richardson');
+INSERT INTO `developer` VALUES (1,'\"	Namco\"','Tokyo Japan'),(2,'\"	Konami\"','Tokyo Japan'),(3,'ID Software','Richardson Texas'),(4,'\"	Stern Electronics\"','Chicago Illinois'),(5,'Kojima Productions','Tokyo Japan'),(6,'Grasshopper Manufacture','Tokyo Japan');
 /*!40000 ALTER TABLE `developer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,14 +58,12 @@ DROP TABLE IF EXISTS `game`;
 CREATE TABLE `game` (
   `gameID` int(11) NOT NULL AUTO_INCREMENT,
   `gameName` varchar(25) DEFAULT NULL,
-  `developerName` varchar(25) DEFAULT NULL,
-  `platformName` varchar(25) DEFAULT NULL,
+  `releaseDate` date DEFAULT NULL,
+  `developerID` int(11) DEFAULT NULL,
   PRIMARY KEY (`gameID`),
-  KEY `developername` (`developerName`),
-  KEY `platformname` (`platformName`),
-  CONSTRAINT `developername` FOREIGN KEY (`developername`) REFERENCES `developer` (`developername`),
-  CONSTRAINT `platformname` FOREIGN KEY (`platformname`) REFERENCES `platform` (`platformname`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+  KEY `developerID` (`developerID`),
+  CONSTRAINT `game_ibfk_1` FOREIGN KEY (`developerID`) REFERENCES `developer` (`developerID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,8 +72,35 @@ CREATE TABLE `game` (
 
 LOCK TABLES `game` WRITE;
 /*!40000 ALTER TABLE `game` DISABLE KEYS */;
-INSERT INTO `game` VALUES (6,'gameName','developerName','platformName'),(7,'Ace Combat 04: Shattered ','Namco','Playstation 2'),(8,'Metal Gear Solid','Konami','Playstation'),(9,'Berzerk','Stern Electronics','Vectrex'),(10,'Quake III Arena','ID Software','PC');
+INSERT INTO `game` VALUES (1,'Ace Combat 04: Shattered ','0000-00-00',1),(2,'Metal Gear Solid','0000-00-00',2),(3,'Berzerk','0000-00-00',4),(4,'Quake III Arena','0000-00-00',3),(5,'Metal Gear Solid V: Groun','0000-00-00',5),(6,'Killer is Dead','0000-00-00',6);
 /*!40000 ALTER TABLE `game` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `gameplatform`
+--
+
+DROP TABLE IF EXISTS `gameplatform`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `gameplatform` (
+  `gameID` int(11) DEFAULT NULL,
+  `platformID` int(11) DEFAULT NULL,
+  UNIQUE KEY `pkGamePlatform` (`gameID`,`platformID`),
+  KEY `platformID` (`platformID`),
+  CONSTRAINT `gameplatform_ibfk_1` FOREIGN KEY (`gameID`) REFERENCES `game` (`gameID`),
+  CONSTRAINT `gameplatform_ibfk_2` FOREIGN KEY (`platformID`) REFERENCES `platform` (`platformID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `gameplatform`
+--
+
+LOCK TABLES `gameplatform` WRITE;
+/*!40000 ALTER TABLE `gameplatform` DISABLE KEYS */;
+INSERT INTO `gameplatform` VALUES (1,1),(2,2),(2,4),(3,3),(4,4),(5,4),(5,5),(5,6),(6,4),(6,6);
+/*!40000 ALTER TABLE `gameplatform` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -85,10 +111,11 @@ DROP TABLE IF EXISTS `manufacturer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `manufacturer` (
-  `manufacturerName` varchar(25) NOT NULL,
+  `manufacturerID` int(11) NOT NULL AUTO_INCREMENT,
+  `manufacturerName` varchar(55) DEFAULT NULL,
   `manufacturerHQ` varchar(55) DEFAULT NULL,
-  PRIMARY KEY (`manufacturerName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`manufacturerID`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -97,8 +124,35 @@ CREATE TABLE `manufacturer` (
 
 LOCK TABLES `manufacturer` WRITE;
 /*!40000 ALTER TABLE `manufacturer` DISABLE KEYS */;
-INSERT INTO `manufacturer` VALUES ('General Consumer Electron',''),('manufacturername','manufacturerhq'),('Sony','\"Tokyo');
+INSERT INTO `manufacturer` VALUES (1,'Sony','Tokyo Japan'),(2,'General Consumer Electronics',''),(3,'Milton Bradley Company','East Longmeadow Massachusetts'),(4,'PC','');
 /*!40000 ALTER TABLE `manufacturer` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `manufacturerplatform`
+--
+
+DROP TABLE IF EXISTS `manufacturerplatform`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `manufacturerplatform` (
+  `manufacturerID` int(11) DEFAULT NULL,
+  `platformID` int(11) DEFAULT NULL,
+  UNIQUE KEY `pkManufacturerPlatform` (`manufacturerID`,`platformID`),
+  KEY `platformID` (`platformID`),
+  CONSTRAINT `manufacturerplatform_ibfk_1` FOREIGN KEY (`manufacturerID`) REFERENCES `manufacturer` (`manufacturerID`),
+  CONSTRAINT `manufacturerplatform_ibfk_2` FOREIGN KEY (`platformID`) REFERENCES `platform` (`platformID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `manufacturerplatform`
+--
+
+LOCK TABLES `manufacturerplatform` WRITE;
+/*!40000 ALTER TABLE `manufacturerplatform` DISABLE KEYS */;
+INSERT INTO `manufacturerplatform` VALUES (1,1),(1,2),(1,5),(1,6),(2,3),(3,3),(4,4);
+/*!40000 ALTER TABLE `manufacturerplatform` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -109,13 +163,11 @@ DROP TABLE IF EXISTS `platform`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `platform` (
-  `platformName` varchar(25) NOT NULL,
-  `platformGen` varchar(25) DEFAULT NULL,
-  `manufacturerName` varchar(25) DEFAULT NULL,
-  PRIMARY KEY (`platformName`),
-  KEY `manufacturername` (`manufacturerName`),
-  CONSTRAINT `manufacturername` FOREIGN KEY (`manufacturername`) REFERENCES `manufacturer` (`manufacturername`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `platformID` int(11) NOT NULL AUTO_INCREMENT,
+  `platformName` varchar(25) DEFAULT NULL,
+  `platformGeneration` varchar(25) DEFAULT NULL,
+  PRIMARY KEY (`platformID`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,7 +176,7 @@ CREATE TABLE `platform` (
 
 LOCK TABLES `platform` WRITE;
 /*!40000 ALTER TABLE `platform` DISABLE KEYS */;
-INSERT INTO `platform` VALUES ('PC','',''),('platformName','platformGen','manufacturername'),('Playstation','5th Generation','Sony'),('Playstation 2','6th Generation','Sony'),('Vectrex','2nd Generation','General Consumer Electron');
+INSERT INTO `platform` VALUES (1,'Playstation 2','6th Generation'),(2,'Playstation','5th Generation'),(3,'Vectrex','2nd Generation'),(4,'PC',''),(5,'Playstation 4','8th Generation'),(6,'Playstation 3','7th Generation');
 /*!40000 ALTER TABLE `platform` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -137,4 +189,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-08-05 23:35:07
+-- Dump completed on 2015-08-08 14:34:06
